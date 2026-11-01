@@ -15,11 +15,23 @@ git clone https://github.com/<your-username>/interview-prep-agents.git
 cd interview-prep-agents
 git remote add upstream https://github.com/GoNextPath/interview-prep-agents.git
 python -m venv .venv && source .venv/bin/activate
-pip install -e ".[dev]"
+make install
 pytest
 ```
 
 `origin` is your fork, which is where you push. `upstream` is this repo, which is where pull requests go.
+
+Use `make help` to discover development commands, or `make check` to run Ruff and offline tests.
+The Makefile uses the project virtual environment when present.
+
+Tests need no model credentials and block outbound connections, including local model servers.
+For model selection, dependency injection, and optional provider tests, see [model configuration](docs/llm.md).
+Its [code organization map](docs/llm-architecture.md#code-organization) shows where to add providers, configuration
+validators, telemetry, and progress behavior. Run `make install-all` to exercise all
+offline SDK/telemetry tests; `make install` remains sufficient for core development.
+Use `make install-openai` or `make install-telemetry` to add just that optional feature.
+Installing the extras does not enable live calls or trace export; see the
+[install and telemetry notes](README.md#development-commands).
 
 ## How we work
 
