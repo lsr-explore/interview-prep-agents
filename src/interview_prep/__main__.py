@@ -6,6 +6,7 @@ python -m interview_prep --topic "system design" --difficulty medium
 from __future__ import annotations
 
 import argparse
+import sys
 
 from interview_prep.models import Difficulty
 from interview_prep.pipeline import Pipeline
@@ -21,7 +22,18 @@ def main() -> None:
     pipeline = Pipeline()
     question = pipeline.ask(args.topic, Difficulty(args.difficulty))
     print(f"\nQ: {question.prompt}\n")
-    answer = args.answer if args.answer is not None else input("Your answer: ")
+    if args.answer is not None:
+        answer = args.answer
+    else:
+        try:
+            answer = input("Your answer: ")
+        except EOFError:
+            answer = ""
+
+    if not answer.strip():
+        print('No answer given. Type an answer at the prompt or pass --answer "...".\n', file=sys.stderr)
+        parser.print_help(sys.stderr)
+        parser.exit(2)
 
     outcome = pipeline.submit(question, answer)
     fb = outcome.feedback
